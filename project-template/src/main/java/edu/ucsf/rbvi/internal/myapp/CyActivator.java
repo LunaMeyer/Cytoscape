@@ -1,7 +1,15 @@
-package edu.ucsf.rbvi.myapp.internal;
+package app;
 
-import org.cytoscape.service.util.AbstractCyActivator;
+import org.cytoscape.model.CyNetworkManager;
+import org.cytoscape.view.model.CyNetworkViewManager;
+import org.cytoscape.view.model.CyNetworkViewFactory;
+import org.cytoscape.model.CyNetworkFactory;
+import org.cytoscape.work.TaskFactory;
 import org.osgi.framework.BundleContext;
+import org.cytoscape.service.util.AbstractCyActivator;
+import org.cytoscape.session.CyNetworkNaming;
+
+import java.util.Properties;
 
 /**
  * {@code CyActivator} is a class that is a starting point for OSGi bundles.
@@ -35,6 +43,21 @@ public class CyActivator extends AbstractCyActivator {
 	 * about the status of some service.
 	 */
 	@Override
-	public void start(BundleContext context) throws Exception {
+	public void start(BundleContext bc) throws Exception {
+	
+		CyNetworkNaming cyNetworkNamingServiceRef = getService(bc,CyNetworkNaming.class);
+		
+		CyNetworkFactory cyNetworkFactoryServiceRef = getService(bc,CyNetworkFactory.class);
+		CyNetworkManager cyNetworkManagerServiceRef = getService(bc,CyNetworkManager.class);
+
+		CyNetworkViewFactory cyNetworkViewFactoryServiceRef = getService(bc,CyNetworkViewFactory.class);
+		CyNetworkViewManager cyNetworkViewManagerServiceRef = getService(bc,CyNetworkViewManager.class);
+		
+		CreateNetworkViewTaskFactory createNetworkViewTaskFactory = new CreateNetworkViewTaskFactory(cyNetworkNamingServiceRef, cyNetworkFactoryServiceRef,cyNetworkManagerServiceRef, cyNetworkViewFactoryServiceRef,cyNetworkViewManagerServiceRef);
+				
+		Properties createNetworkViewTaskFactoryProps = new Properties();
+		createNetworkViewTaskFactoryProps.setProperty("preferredMenu","Apps.Samples");
+		createNetworkViewTaskFactoryProps.setProperty("title","Create Network View");
+		registerService(bc,createNetworkViewTaskFactory,TaskFactory.class, createNetworkViewTaskFactoryProps);
 	}
 }
