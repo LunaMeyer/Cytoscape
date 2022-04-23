@@ -13,7 +13,8 @@ public class PanelTask extends AbstractTask {
     //run app, run
     public void run(TaskMonitor monitor){
         
-        Panel panel = new Panel();
+        Manager manager = new Manager();
+        Panel panel = new Panel(manager);
         panel.setVisible();
         
         
