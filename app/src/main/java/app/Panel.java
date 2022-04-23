@@ -91,9 +91,9 @@ class Panel {
                 manager.setNetworkPath(network.getText());
                 manager.setDataPath(data.getText());
                 frame.dispose();
-                //TestPanel test = new TestPanel(manager);
-                //test.setVisible();
-                TestFile test = new TestFile(manager);
+                TestPanel test = new TestPanel(manager);
+                test.setVisible();
+                //TestFile test = new TestFile(manager);
             }
         });
         
