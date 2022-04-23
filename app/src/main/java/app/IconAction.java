@@ -11,6 +11,8 @@ public class IconAction extends AbstractCyAction {
 
     private static final long serialVersionUID = 1L;
     private CySwingApplication desktopApp;
+    private String networkPath;
+    private String dataPath;
     
     public IconAction(CySwingApplication desktopApp){
         // Add a menu item
@@ -31,19 +33,15 @@ public class IconAction extends AbstractCyAction {
 
     public void actionPerformed(ActionEvent e) {
         
-        Panel panel = new Panel();
+        Manager manager = new Manager();
+        Panel panel = new Panel(manager);
         panel.setVisible();
-        
-        
-        
-        
+
     }
-    
     
     public boolean isInToolBar() {
         return true;
     }
-
 
     public boolean isInMenuBar() {
         return false;

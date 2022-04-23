@@ -10,20 +10,12 @@ import org.cytoscape.work.swing.TunableUIHelper;
 
 public class PanelTask extends AbstractTask {
     
-    Panel panel;
-    
-    public PanelTask(){
-    
-        panel = new Panel();
-        
-    }
-    
-    
+    //run app, run
     public void run(TaskMonitor monitor){
         
+        Panel panel = new Panel();
         panel.setVisible();
         
-       
         
     }
     

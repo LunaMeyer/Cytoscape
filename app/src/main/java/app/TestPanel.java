@@ -16,29 +16,36 @@ class TestPanel {
     
     JFrame frame;
     JPanel myPanel;
-    JLabel lb1;
+    JLabel lbIcon;
+    JLabel lbData;
+    JLabel lbNetwork;
     JButton buttonOk;
+    ImageIcon icon;
+    Manager manager;
     
     
-    public TestPanel(String label) {
+    public TestPanel(final Manager manager) {
         
+        this.manager = manager;
         myPanel = new JPanel();
         buttonOk= new JButton ("Ok");
-        lb1= new JLabel("Votre reponse est: "+label);
         frame = new JFrame ("Answer");
+        lbData = new JLabel(manager.getDataPath());
+        lbNetwork = new JLabel(manager.getNetworkPath());
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setSize(500, 400);
         frame.setLocationRelativeTo(null);
-        myPanel.add(lb1);
+
+        myPanel.add(lbData);
+        myPanel.add(lbNetwork);
+        myPanel.add(buttonOk);
         frame.add(myPanel);
         
         
         buttonOk.addActionListener(new ActionListener() {
             //@Override
             public void actionPerformed(ActionEvent e) {
-                
                 frame.dispose();
-                
             }
         });
     }
@@ -46,7 +53,6 @@ class TestPanel {
     public void setVisible(){
         frame.setVisible(true);
     }
-    
     
 }
 

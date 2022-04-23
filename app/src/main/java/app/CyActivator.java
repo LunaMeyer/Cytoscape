@@ -45,6 +45,7 @@ public class CyActivator extends AbstractCyActivator {
             //register taskfactory
             registerService(bc,panelTaskFactory,TaskFactory.class, props);
         }
+        
     }
 }
 
