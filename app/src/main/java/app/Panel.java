@@ -1,16 +1,11 @@
 package app;
 
-import java.awt.BorderLayout;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import javax.swing.ImageIcon;
-import javax.swing.JPanel;
-import javax.swing.JLabel;
-import javax.swing.BoxLayout;
-import javax.swing.JFrame;
-import javax.swing.JButton;
-import javax.swing.JTextField;
-import javax.swing.JFileChooser;
+import static javax.swing.GroupLayout.Alignment.BASELINE;
+import static javax.swing.GroupLayout.Alignment.CENTER;
+import static javax.swing.GroupLayout.Alignment.LEADING;
+
+import java.awt.event.*;
+import javax.swing.*;
 
 
 class Panel {
@@ -53,39 +48,51 @@ class Panel {
         myPanel.add(buttonOk);
         myPanel.add(buttonCancel);
         
+        //Create Layout
+        GroupLayout groupLayout = new GroupLayout(myPanel); 
+        groupLayout.setAutoCreateGaps(true);  
+        groupLayout.setAutoCreateContainerGaps(true);  
+        myPanel.setLayout(groupLayout); 
+        
+        //Set components in the layout
+        groupLayout.setHorizontalGroup(groupLayout.createSequentialGroup()  
+                .addGroup(groupLayout.createParallelGroup(LEADING).addComponent(txt1).addComponent(txt2))  
+                .addGroup(groupLayout.createParallelGroup(CENTER).addComponent(network).addComponent(data).addComponent(buttonCancel))
+                .addGroup(groupLayout.createParallelGroup(LEADING).addComponent(browseNetwork).addComponent(browseData).addComponent(buttonOk)));  
+  
+        groupLayout.setVerticalGroup(groupLayout.createSequentialGroup()  
+                .addGroup(groupLayout.createParallelGroup(BASELINE).addComponent(txt1).addComponent(network).addComponent(browseNetwork))  
+                .addGroup(groupLayout.createParallelGroup(BASELINE).addComponent(txt2).addComponent(data).addComponent(browseData))
+                .addGroup(groupLayout.createParallelGroup(LEADING).addComponent(buttonCancel).addComponent(buttonOk)));  
+        
+        
         //create frame
-        frame = new JFrame("Browse");
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        frame.setLocationRelativeTo(null);
-        frame.setSize(450, 200);
+        frame = createFrame("Browse");
         
         //add panel to frame
         frame.add(myPanel);
         
-        
+        //Create Action listeners for the buttons
         browseNetwork.addActionListener(new ActionListener() {
-            //@Override
             public void actionPerformed(ActionEvent e) {
                 JFileChooser browse = new JFileChooser();
                 if (browse.showOpenDialog(myPanel) == JFileChooser.APPROVE_OPTION) {
-                    network.setText(browse.getSelectedFile().getAbsolutePath());
+                    network.setText(browse.getSelectedFile().getPath());
                 }
             }
         });
         
         browseData.addActionListener(new ActionListener() {
-            //@Override
             public void actionPerformed(ActionEvent e) { 
                 JFileChooser browse = new JFileChooser();
                 if (browse.showOpenDialog(myPanel) == JFileChooser.APPROVE_OPTION) {
-                    data.setText(browse.getSelectedFile().getAbsolutePath());
+                    data.setText(browse.getSelectedFile().getPath());
                 }
             }
         });
         
         //define buttonOk action
         buttonOk.addActionListener(new ActionListener() {
-            //@Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("BONJOUR");
                 manager.setNetworkPath(network.getText());
@@ -98,7 +105,6 @@ class Panel {
         });
         
         buttonCancel.addActionListener(new ActionListener() {
-            //@Override
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
             }
@@ -109,7 +115,16 @@ class Panel {
     //method to be called to show the panel
     public void setVisible(){
         frame.setVisible(true);
+        frame.pack();
     }
+    public JFrame createFrame(String title) {
+    	frame = new JFrame(title);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setLocationRelativeTo(null);
+        return frame;
+        
+    }
+    
     
     
 }
