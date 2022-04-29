@@ -8,8 +8,9 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 public class ExcelHashmap{
 
  public static void main(String args[]){
-   HashMap<Object, Object> myHashMap = new HashMap<Object,Object>();
-	 System.out.println("test hehe");
+   HashMap<String, List<String>> myHashMap = new HashMap<String,List<String>>();
+	//  System.out.println("test hehe");
+  String key = "Accession";
 
 	 try {
 	 File file = new File("../ressources/Elysia_Bioscience_Data_Res.xlsx");   //creating a new file instance
@@ -17,43 +18,51 @@ public class ExcelHashmap{
 	 XSSFWorkbook wb = new XSSFWorkbook(fis);
 	 XSSFSheet sheet = wb.getSheetAt(0);
    Iterator<Row> itr = sheet.iterator();    //iterating over excel file  
+   
    System.out.println("ueue");
-   Vector<Object> cellArray = new Vector<Object>();
-   while (itr.hasNext())                 
-   {
-   cellArray = new Vector<Object>();  
-   Row row = itr.next();  
-   Iterator<Cell> cellIterator = row.cellIterator();   //iterating over each column  
-   while (cellIterator.hasNext())  
-   {  
-   Cell cell = cellIterator.next(); 
-  //  System.out.println(cell);
-  //  System.out.println(cell.getCellType()); 
+   Vector<String> cellArray = new Vector<String>();
 
-   switch (cell.getCellType())               
-   {  
-   case STRING:    //field that represents string cell type  
-    cellArray.add(cell);
-   break;  
-   case NUMERIC:    //field that represents number cell type  
-    cellArray.add(cell);
-   break;  
-   default:  
-   }  
-  }
-  // System.out.println(cellArray);
-  myHashMap.put(cellArray.get(0),cellArray.subList(1,cellArray.size()-1));
+   Vector<String> keys = new Vector<String>();
+   Row keysRow = itr.next();
+   Iterator<Cell> keyCellIterator = keysRow.cellIterator();
+   
+   while (keyCellIterator.hasNext())  
+    {
+    Cell keyCell = keyCellIterator.next(); 
+    keys.add(String.valueOf(keyCell));
+    }
+    int keyIndex = keys.indexOf(key);
+    System.out.println(keys);
+    String keyValue = keys.get(keyIndex);
+    keys.remove(keyIndex);
+
+   while (itr.hasNext())                 
+    {
+    cellArray = new Vector<String>();  
+    Row row = itr.next();  
+    Iterator<Cell> cellIterator = row.cellIterator();   //iterating over each column  
+    while (cellIterator.hasNext())  
+      {  
+      Cell cell = cellIterator.next(); 
+      cellArray.add(String.valueOf(cell));
+      }
+      cellArray.remove(0);
+      String indexCell = cellArray.get(keyIndex);
+      cellArray.remove(keyIndex);
+      myHashMap.put(indexCell,cellArray);
     }  
       }catch(Exception e)
-      {
-        e.printStackTrace();
-      }
-      for (HashMap.Entry<Object, Object> entry : myHashMap.entrySet()) {
-        Object key = entry.getKey();
-        System.out.println(key);
-        Object value = entry.getValue();
-        System.out.println(value);
-    }
+        {
+          e.printStackTrace();
+        }
+
+      for (HashMap.Entry<String, List<String>> entry : myHashMap.entrySet()) 
+       {
+        String hashKey = entry.getKey();
+        // System.out.println(hashKey);
+        List<String> value = entry.getValue();
+        // System.out.println(value);
+       }
 
 			}
     }
