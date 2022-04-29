@@ -18,8 +18,7 @@ public class ExcelHashmap{
 	 XSSFWorkbook wb = new XSSFWorkbook(fis);
 	 XSSFSheet sheet = wb.getSheetAt(0);
    Iterator<Row> itr = sheet.iterator();    //iterating over excel file  
-   
-   System.out.println("ueue");
+
    Vector<String> cellArray = new Vector<String>();
 
    Vector<String> keys = new Vector<String>();
@@ -32,7 +31,6 @@ public class ExcelHashmap{
     keys.add(String.valueOf(keyCell));
     }
     int keyIndex = keys.indexOf(key);
-    System.out.println(keys);
     String keyValue = keys.get(keyIndex);
     keys.remove(keyIndex);
 
