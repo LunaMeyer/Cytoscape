@@ -18,6 +18,8 @@ public class Main {
 			System.out.println(entry.getKey()+" : "+size +" "+entry.getValue());
 		}
 	}
+	
+	//Methode pour merger la map des résultats et la map des nodes
 	public static Map<String, List<String>>  mergeMap(Map<String,List<String>> map1, Map<String, String> map2){
 		Map<String, List<String>> mapmerge = new HashMap<String,List<String>>();
 		List<String> templist = new ArrayList<String>();
