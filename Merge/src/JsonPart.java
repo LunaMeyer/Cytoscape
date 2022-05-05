@@ -14,6 +14,7 @@ public class JsonPart {
 	private  Map<String, String> nodes = new HashMap<String,String>();
 	private int ii = 0;
 	
+	//Classe permettant de créer la hasmap des nodes à partir d'un fichier json
 	public JsonPart(String pathtofile, List<String> keys){
 		this.src = new File(pathtofile);
 		try {
@@ -79,6 +80,7 @@ public class JsonPart {
 			e.printStackTrace();
 		}
 	}
+	//Nodes pour obtenir les id de chaque node/protéine, ce qui permet par la suite d'obtenir les edges
 	public List<String> getId(){
 		List<String> idlist = new Vector<String>();
 		for(Entry<String, String> entry : nodes.entrySet()) {
@@ -86,7 +88,7 @@ public class JsonPart {
 		}
 		return idlist;
 	}
-	
+	//Methode pour obtenir la hashmap des nodes
 	public Map<String, String> getNodes(){
 		return nodes;
 	}
