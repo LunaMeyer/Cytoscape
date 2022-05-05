@@ -13,7 +13,7 @@ public class JsonPart2 {
 	private  Map<String, List<String>> edges = new HashMap<String,List<String>>();
 	private int i=0;
 	
-	
+	//Classe pour créer la hashmap des edges
 	public JsonPart2(String pathtofile, List<String> id){
 		this.src = new File(pathtofile);
 		try {
@@ -95,5 +95,9 @@ public class JsonPart2 {
 		catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public HashMap<String,List<String>> getEdges(){
+		return edges;
 	}
 }
