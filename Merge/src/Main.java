@@ -1,38 +1,152 @@
-import java.util.*;
+import static javax.swing.GroupLayout.Alignment.*;
+
+import java.awt.event.*;
+import java.util.ArrayList;
+import java.util.List;
+//import java.io.*;
+//import java.util.*;
 import java.util.Map.Entry;
 
-public class Main {
+import javax.swing.*;
 
+public class Main {
+	 	static JPanel myPanel;
+	 	static JFrame frame;
+	 	static JLabel txt1;
+	 	static JLabel txt2;
+	 	static JTextField network;
+	 	static JTextField data;
+	 	static JButton browseNetwork;
+	 	static JButton browseData;
+	 	static JButton buttonOk;
+	 	static JButton buttonCancel;
+	    
+	    
 	public static void main(String[] args) {
-		ExcelPart result = new ExcelPart("C:\\Users\\louis\\Desktop\\Network\\Elysia_Bioscience_Data_Res.xlsx");
-		List<String> keys = result.getKeys();	
-		JsonPart parser = new JsonPart("C:\\Users\\louis\\Desktop\\Network\\Homo-spaiens.cyjs",keys);
-		List<String> id = parser.getId();
-		JsonPart2 parser2 = new JsonPart2("C:\\Users\\louis\\Desktop\\Network\\Homo-spaiens.cyjs",id);
-		Map<String, String> nodes = parser.getNodes(); 
-		Map<String, List<String>> data = result.getData();
-		Map<String, List<String>> merge = mergeMap(data,nodes);
-		System.out.println("Finito");
-		for(Entry<String, List<String>> entry : merge.entrySet()) {
-			String size = String.valueOf(entry.getValue().size());
-			System.out.println(entry.getKey()+" : "+size +" "+entry.getValue());
-		}
-	}
-	
-	//Methode pour merger la map des résultats et la map des nodes
-	public static Map<String, List<String>>  mergeMap(Map<String,List<String>> map1, Map<String, String> map2){
-		Map<String, List<String>> mapmerge = new HashMap<String,List<String>>();
-		List<String> templist = new ArrayList<String>();
-		String tempkey = new String();
-		
-		for(Entry<String, String> entry : map2.entrySet()) {
+		 //create panel and components
+        Manager manager = new Manager();
+        myPanel = new JPanel();
+        txt1 = new JLabel("Choose your network file (format):");
+        txt2 = new JLabel("Choose your data file:");
+        browseNetwork = new JButton("Browse");
+        browseData = new JButton("Browse");
+        network = new JTextField(30);
+        data = new JTextField(30);
+        buttonOk= new JButton ("Ok");
+        buttonCancel = new JButton("Cancel");
+        
+        //add components to panel
+        myPanel.add(txt1);
+        myPanel.add(network);
+        myPanel.add(browseNetwork);
+        myPanel.add(txt2);
+        myPanel.add(data);
+        myPanel.add(browseData);
+        myPanel.add(buttonOk);
+        myPanel.add(buttonCancel);
+        
+        //Create Layout
+        GroupLayout groupLayout = new GroupLayout(myPanel); 
+        groupLayout.setAutoCreateGaps(true);  
+        groupLayout.setAutoCreateContainerGaps(true);  
+        myPanel.setLayout(groupLayout); 
+        
+        //Set components in the layout
+        groupLayout.setHorizontalGroup(groupLayout.createSequentialGroup()  
+                .addGroup(groupLayout.createParallelGroup(LEADING).addComponent(txt1).addComponent(txt2))  
+                .addGroup(groupLayout.createParallelGroup(CENTER).addComponent(network).addComponent(data).addComponent(buttonCancel))
+                .addGroup(groupLayout.createParallelGroup(LEADING).addComponent(browseNetwork).addComponent(browseData).addComponent(buttonOk)));  
+  
+        groupLayout.setVerticalGroup(groupLayout.createSequentialGroup()  
+                .addGroup(groupLayout.createParallelGroup(BASELINE).addComponent(txt1).addComponent(network).addComponent(browseNetwork))  
+                .addGroup(groupLayout.createParallelGroup(BASELINE).addComponent(txt2).addComponent(data).addComponent(browseData))
+                .addGroup(groupLayout.createParallelGroup(LEADING).addComponent(buttonCancel).addComponent(buttonOk)));  
+        
+        
+        //create frame
+        frame = createFrame("Browse");
+        
+        //add panel to frame
+        frame.add(myPanel);
+        setVisible();
+        
+        //Create Action listeners for the buttons
+        browseNetwork.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                JFileChooser browse = new JFileChooser();
+                if (browse.showOpenDialog(myPanel) == JFileChooser.APPROVE_OPTION) {
+                    network.setText(browse.getSelectedFile().getPath());
+                }
+                
+            }
+        });
+        
+        browseData.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) { 
+                JFileChooser browse = new JFileChooser();
+                if (browse.showOpenDialog(myPanel) == JFileChooser.APPROVE_OPTION) {
+                    data.setText(browse.getSelectedFile().getPath());
+                }
+                
+            }
+        });
+        
+        //define buttonOk action
+        buttonOk.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                manager.setNetworkPath(network.getText());
+                manager.setDataPath(data.getText());
+                mergeMap(manager.getNetworkPath(),manager.getDataPath(), manager);
+                frame.dispose();
+                
+            }
+        });
+        
+        buttonCancel.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                frame.dispose();
+            }
+        });
+    }
+    
+    
+    //method to be called to show the panel
+    public static void setVisible(){
+        frame.setVisible(true);
+        frame.pack();
+    }
+    public static JFrame createFrame(String title) {
+    	frame = new JFrame(title);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setLocationRelativeTo(null);
+        return frame;
+    }
+    
+    private static void mergeMap(String pathtonetwork,String pathtoresults, Manager manager){
+    	String tempkey = new String();
+    	List<String> templist = new ArrayList<String>();
+    	
+    	DataExtract data = new DataExtract(pathtoresults);
+    	manager.setKeys(data.getKeys());
+    	
+    	ExtractNodes parserNodes = new ExtractNodes(pathtonetwork,manager.getKeys());
+    	
+    	
+    	List<String> id = parserNodes.getId();
+    	manager.setId(id);
+    
+    	ExtractEdges parserEdges = new ExtractEdges(pathtonetwork,id);
+    	manager.setData(data.getData());
+    	manager.setNodes(parserNodes.getNodes());
+    	manager.setEdges(parserEdges.getEdges());
+    	
+    	for(Entry<String, String> entry : manager.getNodes().entrySet()) {
 			
 			tempkey = entry.getKey();
-			templist = map1.get(tempkey);
+			templist = manager.getData().get(tempkey);
 			templist.add(entry.getValue());
-			mapmerge.put(tempkey, templist);
+			manager.getMerge().put(tempkey, templist);
 		}
-		
-		return mapmerge;
-	}
+    	System.out.println("Finito");
+    }
 }
