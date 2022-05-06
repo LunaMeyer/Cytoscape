@@ -27,10 +27,10 @@ public class Task1 extends AbstractTask {
     File fn = new File("/home/vincent/Cytoscape_v3.9.1/STRING network - Homo_sapiens_nat.cyjs");
     File fd = new File("/home/vincent/Cytoscape_v3.9.1/Elysia_Bioscience_Data_Res.xlsx");
     
-    @Tunable(description="network file")
+    @Tunable(description="network file", params="input=true")
     public File nfile;
     
-    @Tunable(description="data file")
+    @Tunable(description="data file", params="input=true")
     public File dfile;
     
     

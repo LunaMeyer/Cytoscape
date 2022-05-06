@@ -1,18 +1,22 @@
 package app;
 
 import org.cytoscape.application.CyApplicationManager;
-import org.cytoscape.work.TaskObserver;
 import org.cytoscape.model.*;
 import org.cytoscape.task.edit.*;
 import org.cytoscape.model.subnetwork.*;
 import org.cytoscape.view.vizmap.*;
 import org.cytoscape.view.vizmap.mappings.*;
 import org.cytoscape.view.model.*;
+import org.cytoscape.view.presentation.annotations.*;
+import org.cytoscape.command.CommandExecutorTaskFactory;
+import org.cytoscape.task.read.LoadVizmapFileTaskFactory;
+import org.cytoscape.task.visualize.ApplyVisualStyleTaskFactory;
 
 import org.cytoscape.service.util.CyServiceRegistrar;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.TaskMonitor;
+import org.cytoscape.work.TaskObserver;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.AbstractTask;
 
@@ -33,12 +37,13 @@ import org.cytoscape.task.read.LoadNetworkFileTaskFactory;
 import org.cytoscape.task.read.LoadNetworkURLTaskFactory;
 import org.cytoscape.task.read.LoadTableFileTaskFactory;
 import java.net.URL;
-import java.io.File;
+import java.util.Set;
 
 class Manager {
     
     TaskManager<?,?> taskManager;
     CyServiceRegistrar registrar;
+    CyRootNetworkManager cyRootNetworkManager;
     File networkFile;
     File dataFile;
     CyNetworkManager cyNetworkManagerServiceRef;
@@ -63,39 +68,42 @@ class Manager {
     List<String> col;
     String ref;
     VisualStyle vizu1;
+    CommandExecutorTaskFactory cmd;
+    TaskObserver taskObserver;
+    Collection<CyColumn> cycols;
+    String clientName;
+    LoadVizmapFileTaskFactory loadVizmapFileTaskFactory;
+    ApplyVisualStyleTaskFactory applyVisualStyleTaskFactory;
+    File vizFile;
     
+    //var fct parseParam
+    String prefix = "log2_Abundance_Ratio_";
+    int lgth = prefix.length();
+    int fullLgth;
+    List<String> conditions = new ArrayList<>();
+    List<String> endConditions = new ArrayList<>();
+    Map<String,Integer> map = new HashMap<String,Integer>(4);
+    List<String[]> pairs = new ArrayList<>();
+    String current;
+    String tmp;
+    String name;
+    String[] pair;
+    String ctrl = "CTRL";
+    String veh;
     
     public Manager(final CyServiceRegistrar registrar) {
         this.registrar = registrar;
         taskManager = registrar.getService(TaskManager.class);
+        cyApplicationManager = registrar.getService(CyApplicationManager.class);
         visualStyleFactory = registrar.getService(VisualStyleFactory.class);
         visualMappingManager = registrar.getService(VisualMappingManager.class);
         visualMappingFunctionFactory = registrar.getService(VisualMappingFunctionFactory.class, "(mapping.type=continuous)");
         visualMappingFunctionFactory2 = registrar.getService(VisualMappingFunctionFactory.class, "(mapping.type=passthrough)");
-        
+        cmd = registrar.getService(CommandExecutorTaskFactory.class);
+        loadVizmapFileTaskFactory =  registrar.getService(LoadVizmapFileTaskFactory.class);
+        applyVisualStyleTaskFactory = registrar.getService(ApplyVisualStyleTaskFactory.class);
     }
     
-    public void createNetwork () {
-        cyNetworkManagerServiceRef = registrar.getService(CyNetworkManager.class);
-        cyNetworkNamingServiceRef = registrar.getService(CyNetworkNaming.class);
-        cyNetworkFactoryServiceRef = registrar.getService(CyNetworkFactory.class);
-        network = cyNetworkFactoryServiceRef.createNetwork();
-		network.getRow(network).set(CyNetwork.NAME, cyNetworkNamingServiceRef.getSuggestedNetworkTitle("Banana"));
-		
-		CyNode node1 = network.addNode();
-		CyNode node2 = network.addNode();
-		CyNode node3 = network.addNode();
-		
-		network.getDefaultNodeTable().getRow(node1.getSUID()).set("name", "banane1");
-		network.getDefaultNodeTable().getRow(node2.getSUID()).set("name", "banane2");
-		network.getDefaultNodeTable().getRow(node3.getSUID()).set("name", "banane3");
-		
-		network.addEdge(node1, node2, false);
-		network.addEdge(node2, node3, false);
-		network.addEdge(node1, node3, false);
-				
-		cyNetworkManagerServiceRef.addNetwork(network);
-    }
     
     public void setNetworkFile (File networkFile) {
         this.networkFile = networkFile;
@@ -104,7 +112,6 @@ class Manager {
     public void setDataFile (File dataFile) {
         this.dataFile= dataFile;
     }
-    
     
     public void execute(TaskIterator iterator) {
 		taskManager.execute(iterator);
@@ -131,7 +138,6 @@ class Manager {
 	
 	
 	public CyApplicationManager getAppMan(){
-	    cyApplicationManager = registrar.getService(CyApplicationManager.class);
 	    return cyApplicationManager;
 	}
 	
@@ -157,7 +163,7 @@ class Manager {
 	}
 	
 	public CyRootNetwork getRoot(CyNetwork net) {
-	    CyRootNetworkManager cyRootNetworkManager = registrar.getService(CyRootNetworkManager.class);
+	    cyRootNetworkManager = registrar.getService(CyRootNetworkManager.class);
 	    return cyRootNetworkManager.getRootNetwork(net);
 	}
 	
@@ -181,8 +187,8 @@ class Manager {
 	    this.col = col;
 	}
 
-	public Collection<String> getParams() {
-	    return col;
+	public List<String> getParams() {
+	    return endConditions;
 	}
 	
 	public void setRef(String ref) {
@@ -200,6 +206,69 @@ class Manager {
 	public VisualStyle getVizu(){
 	    return vizu1;
 	}
+	
+	public void command (TaskObserver obs, String... str) {
+	    taskManager.execute(cmd.createTaskIterator​(obs, str));
+	}
+	
+	public void setClientName(String str) {
+	    clientName = str;
+	}
+	
+	public Set<VisualStyle> loadVizFile() {
+	    return loadVizmapFileTaskFactory.loadStyles(vizFile);
+	}
+	
+	public void setVizFile(File f) {
+	    vizFile = f;
+	}
+	
+	public TaskIterator applyVizTask(Set<CyNetworkView> views) {
+	    return applyVisualStyleTaskFactory.createTaskIterator(views);
+	}
+	
+	public List<String> parseParam () {
+	
+	    cycols = cyApplicationManager.getCurrentNetwork().getDefaultNodeTable().getColumns();
+	    for (CyColumn column : cycols) {
+            name = column.getName();
+            fullLgth = name.length();
+            if (name.startsWith​(prefix)) {
+                tmp = name.substring​(lgth,fullLgth-1);
+                pair = tmp.split("_");
+                pairs.add(pair);
+            }  
+        }
+        
+        for (String[] pair : pairs) {
+            current = pair[0];
+            int currentCpt = map.getOrDefault(current,0);
+            map.put(current,currentCpt+1);
+        }
+        for (String[] pair : pairs) {
+            current = pair[1];
+            int x = map.getOrDefault(current,0);
+        }
+        
+        for (Map.Entry<String, Integer> iter : map.entrySet()) {
+            if (iter.getValue()==0) {
+                ctrl = iter.getKey();
+            }
+            if (iter.getValue()==1) {
+                veh = iter.getKey();
+            }
+        }
+        for (Map.Entry<String, Integer> iter : map.entrySet()) {
+            if (iter.getValue()>1) {
+                String tmp = iter.getKey();
+                endConditions.add(iter.getKey()+"_"+veh);
+            }
+        }
+        endConditions.add(veh+"_"+ctrl);
+        
+        return endConditions;
+	}
+	
 }
 
 

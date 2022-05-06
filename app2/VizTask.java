@@ -10,10 +10,21 @@ public class VizTask extends AbstractTask {
     
     final Manager manager;
     CyApplicationManager appMan;
-    Collection<CyColumn> columns;
+    Collection<CyColumn> cycols;
     String prefix = "log2_Abundance_Ratio_";
     int lgth = prefix.length();
-    List<String> col = new ArrayList<>();
+    int fullLgth;
+    List<String> conditions = new ArrayList<>();
+    List<String> endConditions = new ArrayList<>();
+    Map<String,Integer> map = new HashMap<String,Integer>(4);
+    List<String[]> pairs = new ArrayList<>();
+    String current;
+    String tmp;
+    String name;
+    String[] pair;
+    String ctrl = "CTRL";
+    String veh;
+
     
     public VizTask(final Manager manager) {
         this.manager = manager;
@@ -23,16 +34,7 @@ public class VizTask extends AbstractTask {
     public void run(TaskMonitor monitor){
         
         monitor.setTitle("VizTaskLaunch");
-        appMan = manager.getAppMan();
-        columns = appMan.getCurrentNetwork().getDefaultNodeTable().getColumns();
-        for (CyColumn column : columns) {
-            String name = column.getName();
-            if (name.startsWith​(prefix)) {
-                String tmp = name.substring​(lgth);
-                col.add(tmp);
-            }  
-        }
-        manager.setParams(col);
+        manager.parseParam();
         VizPanel panel = new VizPanel(manager);
         
     }

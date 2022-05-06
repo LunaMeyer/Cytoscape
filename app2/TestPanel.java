@@ -24,7 +24,7 @@ class TestPanel {
         buttonOk= new JButton ("OK");
         frame = new JFrame ("TEST");
         //nbstr = Integer.toString(nb);
-        label = new JLabel(str);
+        label = new JLabel("\""+str+"\"");
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setSize(200, 200);
         frame.setLocationRelativeTo(null);

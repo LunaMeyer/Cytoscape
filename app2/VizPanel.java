@@ -11,10 +11,7 @@ import javax.swing.JFrame;
 import javax.swing.JButton;
 import javax.swing.JTextField;
 import javax.swing.JComboBox;
-
-import org.cytoscape.work.TaskIterator;
 import java.util.*;
-import org.cytoscape.work.TaskIterator;
 
 
 class VizPanel {
@@ -25,9 +22,13 @@ class VizPanel {
     JButton buttonOk;
     JButton buttonCancel;
     JButton buttonExport;
+    JTextField clientNameField;
     JComboBox<String> dropDownList;
+    VizTask2 viz;
+    ExportTask export;
     
-    Collection<String> nameList;
+    List<String> nameList;
+    String clientName;
     
     
     
@@ -36,6 +37,7 @@ class VizPanel {
         //create panel and components
         this.manager = manager;
         nameList = manager.getParams();
+        clientNameField = new JTextField("Client Name as Title    ");
         myPanel = new JPanel();
         buttonOk= new JButton ("Apply");
         buttonExport = new JButton ("Export");
@@ -47,6 +49,7 @@ class VizPanel {
         
         //add components to panel
         myPanel.add(dropDownList);
+        myPanel.add(clientNameField);
         myPanel.add(buttonOk);
         myPanel.add(buttonCancel);
         myPanel.add(buttonExport);
@@ -67,7 +70,9 @@ class VizPanel {
             //@Override
             public void actionPerformed(ActionEvent e) {
                 manager.setRef(dropDownList.getSelectedItem().toString());
-                VizTask2 viz = new VizTask2(manager);
+                clientName = clientNameField.getText();
+                manager.setClientName(clientName);
+                viz = new VizTask2(manager);
                 manager.executeTask(viz);
                 
             }
@@ -83,6 +88,9 @@ class VizPanel {
         buttonExport.addActionListener(new ActionListener() {
             //@Override
             public void actionPerformed(ActionEvent e) {
+                
+                export = new ExportTask(manager);
+                manager.executeTask(export);
                 
             }
         });
