@@ -30,7 +30,6 @@ public class CyActivator extends AbstractCyActivator {
             Manager manager = new Manager (registrar);
         
         
-        //This is the bananicon eventListener service
         {   
             //Get the object needed for cytoscape to read that specific service
             CySwingApplication cytoscapeDesktopService = getService(bc,CySwingApplication.class);
@@ -47,8 +46,8 @@ public class CyActivator extends AbstractCyActivator {
             Task1Facto task1Facto = new Task1Facto (manager);
             //add menu item
             Properties props = new Properties();
-            props.setProperty("preferredMenu","Apps.BANANAPP");
-            props.setProperty("title","Prends 2 bananes");
+            props.setProperty("preferredMenu","Apps.AutomationApp");
+            props.setProperty("title","Imports - Step 1");
             //register taskfactory
             registerService(bc,task1Facto,TaskFactory.class, props);
         }
@@ -56,16 +55,16 @@ public class CyActivator extends AbstractCyActivator {
         {
             Task2Facto task2Facto = new Task2Facto (manager);
             Properties props = new Properties();
-            props.setProperty("preferredMenu","Apps.BANANAPP");
-            props.setProperty("title","step 2");
+            props.setProperty("preferredMenu","Apps.AutomationApp");
+            props.setProperty("title","Merge - step 2");
             registerService(bc,task2Facto,TaskFactory.class, props);
         }
         
         {
             VizTaskFactory vizTaskFactory = new VizTaskFactory (manager);
             Properties props = new Properties();
-            props.setProperty("preferredMenu","Apps.BANANAPP");
-            props.setProperty("title","ZouBisouVizu");
+            props.setProperty("preferredMenu","Apps.AutomationApp");
+            props.setProperty("title","AutoVizu");
             registerService(bc,vizTaskFactory,TaskFactory.class, props);
         }
         

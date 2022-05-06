@@ -1,17 +1,13 @@
 package app;
 
-import java.awt.BorderLayout;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import javax.swing.ImageIcon;
 import javax.swing.JPanel;
-import javax.swing.JLabel;
-import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JButton;
 import javax.swing.JTextField;
 import javax.swing.JComboBox;
-import java.util.*;
+import java.util.List;
 
 
 class VizPanel {
@@ -25,11 +21,8 @@ class VizPanel {
     JTextField clientNameField;
     JComboBox<String> dropDownList;
     VizTask2 viz;
-    ExportTask export;
-    
     List<String> nameList;
     String clientName;
-    
     
     
     public VizPanel(final Manager manager) {
@@ -57,11 +50,11 @@ class VizPanel {
         //create frame
         frame = new JFrame("StyleChooser");
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        //frame.setLocationRelativeTo(null);
-        frame.setSize(450, 100);
+        frame.setSize(350, 120);
         
         //add panel to frame
         frame.add(myPanel);
+        frame.setAlwaysOnTop(true);
         frame.setVisible(true);
         
         
@@ -70,10 +63,7 @@ class VizPanel {
             //@Override
             public void actionPerformed(ActionEvent e) {
                 manager.setRef(dropDownList.getSelectedItem().toString());
-                clientName = clientNameField.getText();
-                manager.setClientName(clientName);
-                viz = new VizTask2(manager);
-                manager.executeTask(viz);
+                manager.executeTask(new VizTask2(manager));
                 
             }
         });
@@ -88,9 +78,8 @@ class VizPanel {
         buttonExport.addActionListener(new ActionListener() {
             //@Override
             public void actionPerformed(ActionEvent e) {
-                
-                export = new ExportTask(manager);
-                manager.executeTask(export);
+                manager.setClientName(clientNameField.getText());
+                manager.executeTask(new ExportTask(manager));
                 
             }
         });
