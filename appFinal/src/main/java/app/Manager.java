@@ -245,7 +245,6 @@ class Manager {
             if (name.startsWith​(prefix)) {
                 tmp = name.substring​(lgth,fullLgth-1);
                 allConditions.add(tmp);
-                TestPanel test = new TestPanel(tmp);
             }  
         }
 	    return allConditions;
