@@ -51,6 +51,8 @@ class Manager {
     //the vars
     String ref;
     String clientName;
+    String networkPath = "";
+    String dataPath = "";
     
     //var fcts parseConditions
     String prefix = "log2_Abundance_Ratio_";
@@ -139,6 +141,22 @@ class Manager {
 	
 	
 	//fetch/set vars
+	public void setNetworkPath(String str) {
+	    networkPath = str;
+	}
+	
+	public String getNetworkPath() {
+	    return networkPath;
+	}
+	
+	public void setDataPath(String str) {
+	    dataPath = str;
+	}
+	
+	public String getDataPath() {
+	    return dataPath;
+	}
+	
 	public void setRef(String ref) {
 	    this.ref = ref;
 	}

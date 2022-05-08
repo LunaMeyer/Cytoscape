@@ -15,7 +15,7 @@ public class StartFacto extends AbstractTaskFactory {
     
     public TaskIterator createTaskIterator(){
     
-        return new TaskIterator(new ImportTask(manager), new MergeTask(manager));
+        return new TaskIterator(new ImportTask(manager));
         
     }
     
