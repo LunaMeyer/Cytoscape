@@ -30,7 +30,9 @@ public class ImportTask extends AbstractTask {
         
         
         monitor.setTitle("Imports");
-        
+
+        nfile = new File(nfile.getAbsolutePath().replace("\\","/"));
+        dfile = new File(dfile.getAbsolutePath().replace("\\","/"));
         
         manager.command(null, "table import file file='"+dfile+"' startLoadRow=0 firstRowAsColumnNames=true");
         
