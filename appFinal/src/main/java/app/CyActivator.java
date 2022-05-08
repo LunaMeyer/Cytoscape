@@ -28,7 +28,6 @@ public class CyActivator extends AbstractCyActivator {
             Manager manager = new Manager (registrar);
             
         
-        //This is the menu item taskfactory
         {
             //create taskfactory
             StartFacto startFacto = new StartFacto (manager);
@@ -48,6 +47,7 @@ public class CyActivator extends AbstractCyActivator {
             props.setProperty("title","Visualization Panel");
             registerService(bc,vizTaskFactory,TaskFactory.class, props);
         }
+        
         
     }
 }

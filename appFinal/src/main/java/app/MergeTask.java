@@ -4,35 +4,36 @@ import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskMonitor;
 
 import org.cytoscape.application.CyApplicationManager;
-import org.cytoscape.work.Tunable;
-import org.cytoscape.model.*;
+import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyRow;
+import org.cytoscape.model.CyColumn;
+import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyTableManager;
-import org.cytoscape.task.edit.*;
-import java.util.*;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 
 public class MergeTask extends AbstractTask {
     
     final Manager manager;
     CyApplicationManager appMan;
-    MergeTablesTaskFactory merge;
-    List<String> col = new ArrayList<>();
+    CyNetwork net;
     Collection<CyColumn> tcols;
     Collection<CyColumn> ncols;
-    List<CyNetwork> list;
-    CyTable ntab;
-    CyNetwork net;
-    CyTable tab;
-    CyTableManager tabMan;
-    Set<CyTable> tabSet;
     Collection<CyRow> alltRows;
     Collection<CyRow> allnRows;
-    Map<String,Object> rowValues;
-    Set<String> keySet;
+    CyTable tab;
+    CyTable ntab;
     String tname;
     String nname;
+    List<CyNetwork> list;
+    CyTableManager tabMan;
+    Set<CyTable> tabSet;
+    Map<String,Object> rowValues;
+    Set<String> keySet;
     
     
     public MergeTask (final Manager manager) {
@@ -47,19 +48,24 @@ public class MergeTask extends AbstractTask {
         appMan = manager.getAppMan();
         tabMan = manager.getTabMan();
         net = appMan.getCurrentNetwork();
+        ntab = net.getDefaultNodeTable();
         tabSet = tabMan.getGlobalTables();
         
         for (CyTable table : tabSet) {
             tab = table;
         }
         
-        
         tcols = tab.getColumns();
-        ntab = net.getDefaultNodeTable();
-        ncols = ntab.getColumns();
-
-        list = new ArrayList<>();
-        list.add(net);
+        for (CyColumn col : tcols) {
+            if (col.isImmutable()==false) {
+        
+                nname = col.getName();
+                nname = nname.replaceAll("\\W","_");
+                nname = nname.replaceAll("(_)\\1{1,}", "$1");
+                
+                col.setName(nname);
+            }
+        }
         
         for (CyColumn column : tcols) {
             tname = column.getName();
@@ -84,17 +90,7 @@ public class MergeTask extends AbstractTask {
                 }
             }
         }
-
-        //ca marche pas :(
-        for (CyColumn col : ncols) {
-            if (col.isImmutable()==false) {
-
-                nname = col.getName();
-                nname = nname.replaceAll("[^A-Za-z0-9]","_");
-                nname = nname.replaceAll("(_)\\1{1,}", "$1");
-                col.setName(nname);
-            }
-        }
+        
         
         insertTasksAfterCurrentTask​(new FilterTask(manager));
         

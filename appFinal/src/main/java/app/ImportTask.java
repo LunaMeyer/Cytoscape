@@ -14,10 +14,10 @@ public class ImportTask extends AbstractTask {
     final Manager manager;
     CyApplicationManager appMan;
     
-    @Tunable(description="network file", params="input=true")
+    @Tunable(description="network file", params="input=true;fileCategory=network")
     public File nfile;
     
-    @Tunable(description="data file", params="input=true")
+    @Tunable(description="data file", params="input=true;fileCategory=table")
     public File dfile;
     
     

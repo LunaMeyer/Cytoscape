@@ -26,7 +26,7 @@ public class ClusterTask extends AbstractTask {
         
         clusterConditions = manager.parseClusterConditions();
         
-       manager.command(null, "cluster featurevector createNewNetwork=true edgeAttribute=FeatureDistance edgeCutoff='0.05' ignoreMissing=true metric='Euclidean distance' nodeAttributeList='log2(Abundance Ratio: "+clusterConditions.get(0)+"),log2(Abundance Ratio: "+clusterConditions.get(1)+"),log2(Abundance Ratio: "+clusterConditions.get(2)+"),log2(Abundance Ratio: "+clusterConditions.get(3)+")' selectedOnly=false zeroMissing=false");
+        manager.command(null, "cluster featurevector createNewNetwork=true edgeAttribute=FeatureDistance edgeCutoff='0.05' ignoreMissing=true metric='Euclidean distance' nodeAttributeList='log2_Abundance_Ratio_"+clusterConditions.get(0)+"_,log2_Abundance_Ratio_"+clusterConditions.get(1)+"_,log2_Abundance_Ratio_"+clusterConditions.get(2)+"_,log2_Abundance_Ratio_"+clusterConditions.get(3)+"_' selectedOnly=false zeroMissing=false");
         
         insertTasksAfterCurrentTask​(new VizTask(manager));
         

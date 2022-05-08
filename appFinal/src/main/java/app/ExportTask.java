@@ -64,7 +64,6 @@ public class ExportTask extends AbstractTask {
     
         monitor.setTitle("Exportation Task");
         
-        condition = condition.replaceAll("/","-");
         String jpegName = dir.getAbsolutePath()+"/"+networkName+" - "+condition+".jpeg";
         viewFile = new File(jpegName);
         

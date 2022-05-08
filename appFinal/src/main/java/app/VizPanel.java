@@ -23,14 +23,13 @@ class VizPanel {
     VizTask2 viz;
     List<String> nameList;
     String clientName;
-    List<String> clusterConditions;
     
     
     public VizPanel(final Manager manager) {
         
         //create panel and components
         this.manager = manager;
-        nameList = manager.parseParam();
+        nameList = manager.parseAllConditions();
         clientNameField = new JTextField("Client Name as Title    ");
         myPanel = new JPanel();
         buttonOk= new JButton ("Apply");
@@ -61,7 +60,7 @@ class VizPanel {
         
         
         buttonOk.addActionListener(new ActionListener() {
-            //@Override
+            @Override
             public void actionPerformed(ActionEvent e) {
                 manager.setRef(dropDownList.getSelectedItem().toString());
                 manager.executeTask(new VizTask2(manager));
@@ -70,14 +69,14 @@ class VizPanel {
         });
         
         buttonCancel.addActionListener(new ActionListener() {
-            //@Override
+            @Override
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
             }
         });
         
         buttonExport.addActionListener(new ActionListener() {
-            //@Override
+            @Override
             public void actionPerformed(ActionEvent e) {
                 manager.setClientName(clientNameField.getText());
                 manager.executeTask(new ExportTask(manager));

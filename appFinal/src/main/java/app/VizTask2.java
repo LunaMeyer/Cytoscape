@@ -9,7 +9,6 @@ import org.cytoscape.work.TaskMonitor;
 
 import org.cytoscape.application.CyApplicationManager;
 import org.cytoscape.model.CyNetwork;
-
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.vizmap.VisualStyle;
 import org.cytoscape.view.vizmap.VisualMappingFunctionFactory;
@@ -20,7 +19,7 @@ import org.cytoscape.view.vizmap.mappings.PassthroughMapping;
 import org.cytoscape.view.presentation.property.BasicVisualLexicon;
 import org.cytoscape.view.presentation.property.NodeShapeVisualProperty;
 import org.cytoscape.view.presentation.property.values.NodeShape;
-import java.io.File;
+
 
 public class VizTask2 extends AbstractTask {
     
@@ -40,7 +39,6 @@ public class VizTask2 extends AbstractTask {
         this.manager = manager;
         column = manager.getRef();
         appMan = manager.getAppMan();
-        File dir = appMan.getCurrentDirectory();
         vizMan = manager.getVizMan();
         vizMapFacto = manager.getVizMapFacto();
         vizMapFacto2 = manager.getVizMapFacto2();
@@ -63,14 +61,12 @@ public class VizTask2 extends AbstractTask {
 		}
         
         view = appMan.getCurrentNetworkView();
-        
         vizu1 = manager.getVizu(vizName);
-        manager.setVizu(vizu1);
         vizMan.addVisualStyle(vizu1);
         vizMan.setVisualStyle​(vizu1, view);
         
         
-        ContinuousMapping fillNode = (ContinuousMapping) vizMapFacto.createVisualMappingFunction("log2(Abundance Ratio: "+column+")", Double.class, BasicVisualLexicon.NODE_FILL_COLOR);
+        ContinuousMapping fillNode = (ContinuousMapping) vizMapFacto.createVisualMappingFunction("log2_Abundance_Ratio_"+column+"_", Double.class, BasicVisualLexicon.NODE_FILL_COLOR);
         vizu1.addVisualMappingFunction(fillNode);
          
          Color color1 = new Color(197,27,125);
@@ -92,7 +88,7 @@ public class VizTask2 extends AbstractTask {
         PassthroughMapping label = (PassthroughMapping) vizMapFacto2.createVisualMappingFunction("stringdb_canonical_name", String.class, BasicVisualLexicon.NODE_LABEL);
         vizu1.addVisualMappingFunction(label);
         
-        ContinuousMapping shape = (ContinuousMapping) vizMapFacto.createVisualMappingFunction("Abundance Ratio Adj. P-Value: "+column, Double.class, BasicVisualLexicon.NODE_SHAPE);
+        ContinuousMapping shape = (ContinuousMapping) vizMapFacto.createVisualMappingFunction("Abundance_Ratio_Adj_P_Value_"+column+"_", Double.class, BasicVisualLexicon.NODE_SHAPE);
         BoundaryRangeValues<NodeShape> brvs1 = new BoundaryRangeValues<NodeShape>(NodeShapeVisualProperty.ELLIPSE, NodeShapeVisualProperty.RECTANGLE, NodeShapeVisualProperty.RECTANGLE);
         shape.addPoint(0.05,brvs1);
         vizu1.addVisualMappingFunction(shape);

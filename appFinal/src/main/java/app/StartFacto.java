@@ -13,7 +13,6 @@ public class StartFacto extends AbstractTaskFactory {
         this.manager = manager;
     }
     
-    //Method detected and used by the voodoo to run the task. Necessary
     public TaskIterator createTaskIterator(){
     
         return new TaskIterator(new ImportTask(manager), new MergeTask(manager));

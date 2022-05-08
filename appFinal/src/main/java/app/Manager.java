@@ -1,82 +1,59 @@
 package app;
 
 import org.cytoscape.service.util.CyServiceRegistrar;
-import org.cytoscape.work.TaskManager;
 import org.cytoscape.application.CyApplicationManager;
-import org.cytoscape.view.presentation.annotations.AnnotationManager;
+import org.cytoscape.command.CommandExecutorTaskFactory;
+import org.cytoscape.task.create.NewNetworkSelectedNodesOnlyTaskFactory;
+import org.cytoscape.work.TaskManager;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.TaskObserver;
 import org.cytoscape.work.Task;
 import org.cytoscape.work.AbstractTask;
 
-import org.cytoscape.model.*;
-import org.cytoscape.task.edit.*;
-import org.cytoscape.model.subnetwork.*;
-import org.cytoscape.view.vizmap.*;
-import org.cytoscape.view.vizmap.mappings.*;
-import org.cytoscape.view.model.*;
-import org.cytoscape.view.presentation.annotations.*;
-import org.cytoscape.command.CommandExecutorTaskFactory;
-import org.cytoscape.task.create.NewNetworkSelectedNodesOnlyTaskFactory;
+import org.cytoscape.view.vizmap.VisualStyle;
+import org.cytoscape.view.vizmap.VisualStyleFactory;
+import org.cytoscape.view.vizmap.VisualMappingFunctionFactory;
+import org.cytoscape.view.vizmap.VisualMappingManager;
+import org.cytoscape.view.presentation.annotations.AnnotationManager;
 
 import org.cytoscape.model.CyNetworkFactory;
-import org.cytoscape.session.CyNetworkNaming;
 import org.cytoscape.model.CyNetworkManager;
-import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyTableManager;
+import org.cytoscape.model.CyColumn;
 
-import org.cytoscape.io.read.CyNetworkReader;
-import org.cytoscape.io.read.CyNetworkReaderManager;
-import org.cytoscape.io.read.CyTableReader;
-import org.cytoscape.io.read.InputStreamTaskFactory;
-import java.io.*;
-import java.util.*;
-
-import org.cytoscape.task.read.LoadNetworkFileTaskFactory;
-import org.cytoscape.task.read.LoadNetworkURLTaskFactory;
-import org.cytoscape.task.read.LoadTableFileTaskFactory;
-import java.net.URL;
+import java.util.List;
+import java.util.Map;
+import java.util.ArrayList;
 import java.util.Set;
+import java.util.Collection;
+import java.util.HashMap;
 
 class Manager {
     
+    //the board
     TaskManager<?,?> taskManager;
     CyServiceRegistrar registrar;
-    CyRootNetworkManager cyRootNetworkManager;
-    AnnotationManager annotationManager;
-    CyTableManager cyTableManager;
-    File networkFile;
-    File dataFile;
-    CyNetworkManager cyNetworkManagerServiceRef;
-    CyNetworkNaming cyNetworkNamingServiceRef;
-    CyNetworkFactory cyNetworkFactoryServiceRef;
-    ImportDataTableTaskFactory importDataTableTaskFactory;
-    MergeTablesTaskFactory mergeTablesTaskFactory;
-    CyNetwork network;
-    CyNetwork[] networks;
-    LoadNetworkFileTaskFactory loadNetworkFileTaskFactory;
-    LoadNetworkURLTaskFactory loadNetworkURLTaskFactory;
-    LoadTableFileTaskFactory loadTableFileTaskFactory;
-    CyNetworkReaderManager cyNetworkReaderManager;
     CyApplicationManager cyApplicationManager;
-    InputStreamTaskFactory input;
-    FileInputStream fis;
+    CyTableManager cyTableManager;
+    AnnotationManager annotationManager;
+    TaskObserver taskObserver;
     TaskMonitor tm;
+    
+    //the factories
     VisualStyleFactory visualStyleFactory;
     VisualMappingManager visualMappingManager;
     VisualMappingFunctionFactory visualMappingFunctionFactory;
     VisualMappingFunctionFactory visualMappingFunctionFactory2;
-    List<String> col;
-    String ref;
-    VisualStyle vizu1;
-    CommandExecutorTaskFactory cmd;
-    TaskObserver taskObserver;
-    String clientName;
     NewNetworkSelectedNodesOnlyTaskFactory newNetworkSelectedNodesOnlyTaskFactory;
+    CommandExecutorTaskFactory cmd;
     
-    //var fct parseParam
-    String prefix = "log2(Abundance Ratio: ";
+    //the vars
+    String ref;
+    String clientName;
+    
+    //var fcts parseConditions
+    String prefix = "log2_Abundance_Ratio_";
     Collection<CyColumn> cycols;
     int lgth = prefix.length();
     int fullLgth;
@@ -88,7 +65,7 @@ class Manager {
     String tmp;
     String name;
     String[] pair;
-    String ctrl = "control";
+    String ctrl;
     String veh;
     
     
@@ -102,27 +79,12 @@ class Manager {
         visualMappingFunctionFactory = registrar.getService(VisualMappingFunctionFactory.class, "(mapping.type=continuous)");
         visualMappingFunctionFactory2 = registrar.getService(VisualMappingFunctionFactory.class, "(mapping.type=passthrough)");
         cmd = registrar.getService(CommandExecutorTaskFactory.class);
-        mergeTablesTaskFactory = registrar.getService(MergeTablesTaskFactory.class);
         newNetworkSelectedNodesOnlyTaskFactory = registrar.getService(NewNetworkSelectedNodesOnlyTaskFactory.class);
         cyTableManager = registrar.getService(CyTableManager.class);
     }
     
-    public CyTableManager getTabMan() {
-        return cyTableManager;
-    }
     
-    public NewNetworkSelectedNodesOnlyTaskFactory getSelectNetworkTask() {
-        return newNetworkSelectedNodesOnlyTaskFactory;
-    }
-    
-    public void setNetworkFile (File networkFile) {
-        this.networkFile = networkFile;
-    }
-    
-    public void setDataFile (File dataFile) {
-        this.dataFile= dataFile;
-    }
-    
+    //commands
     public void execute(TaskIterator iterator) {
 		taskManager.execute(iterator);
 	}
@@ -130,22 +92,41 @@ class Manager {
 	public void executeTask(Task task) {
 		taskManager.execute(new TaskIterator(task));
 	}
-	
-	public CyApplicationManager getAppMan(){
+    
+    public void command (TaskObserver obs, String... str) {
+	    taskManager.execute(cmd.createTaskIterator​(obs, str));
+	}
+    
+    public TaskIterator commandTask (TaskObserver obs, String... str) {
+	    return cmd.createTaskIterator​(obs, str);
+	}
+    
+    
+    //fetch managers
+    public CyApplicationManager getAppMan(){
 	    return cyApplicationManager;
 	}
-	
-	public CyRootNetwork getRoot(CyNetwork net) {
-	    cyRootNetworkManager = registrar.getService(CyRootNetworkManager.class);
-	    return cyRootNetworkManager.getRootNetwork(net);
+    
+    public CyTableManager getTabMan() {
+        return cyTableManager;
+    }
+    
+    public VisualMappingManager getVizMan() {
+	    return visualMappingManager;
 	}
 	
+	public AnnotationManager getAnnMan() {
+	    return annotationManager;
+	}
+	
+	
+	//fetch tasks
+    public NewNetworkSelectedNodesOnlyTaskFactory getSelectNetworkTask() {
+        return newNetworkSelectedNodesOnlyTaskFactory;
+    }
+    
 	public VisualStyle getVizu(String name) {
 	    return visualStyleFactory.createVisualStyle​(name);
-	}
-	
-	public VisualMappingManager getVizMan() {
-	    return visualMappingManager;
 	}
 	
 	public VisualMappingFunctionFactory getVizMapFacto() {
@@ -156,28 +137,14 @@ class Manager {
 	    return visualMappingFunctionFactory2;
 	}
 	
+	
+	//fetch/set vars
 	public void setRef(String ref) {
 	    this.ref = ref;
 	}
 	
 	public String getRef() {
 	    return ref;
-	}
-	
-    public void setVizu(VisualStyle vizu1) {
-	    this.vizu1 = vizu1;
-	}
-	
-	public VisualStyle getVizu(){
-	    return vizu1;
-	}
-	
-	public void command (TaskObserver obs, String... str) {
-	    taskManager.execute(cmd.createTaskIterator​(obs, str));
-	}
-	
-	public TaskIterator commandTask (TaskObserver obs, String... str) {
-	    return cmd.createTaskIterator​(obs, str);
 	}
 	
 	public void setClientName(String str) {
@@ -188,10 +155,8 @@ class Manager {
 	    return clientName;
 	}
 	
-	public AnnotationManager getAnnMan() {
-	    return annotationManager;
-	}
 	
+	//parsing of column names fonctions
 	public List<String> parseClusterConditions() {
 	    
 	    clusterConditions = new ArrayList<>();
@@ -201,7 +166,7 @@ class Manager {
             fullLgth = name.length();
             if (name.startsWith​(prefix)) {
                 tmp = name.substring​(lgth,fullLgth-1);
-                pair = tmp.split(" / ");
+                pair = tmp.split("_");
                 pairs.add(pair);
             }  
         }
@@ -213,7 +178,9 @@ class Manager {
         }
         for (String[] pair : pairs) {
             current = pair[1];
-            int x = map.getOrDefault(current,0);
+            if (map.containsKey(current)==false) {
+                map.put(current,0);
+            }
         }
 
         for (Map.Entry<String, Integer> iter : map.entrySet()) {
@@ -227,16 +194,17 @@ class Manager {
         for (Map.Entry<String, Integer> iter : map.entrySet()) {
             if (iter.getValue()>1) {
                 String tmp = iter.getKey();
-                clusterConditions.add(iter.getKey()+" / "+veh);
+                clusterConditions.add(iter.getKey()+"_"+veh);
             }
         }
         
-        clusterConditions.add(veh+" / "+ctrl);
+        clusterConditions.add(veh+"_"+ctrl);
         
         return clusterConditions;
 	}
 	
-	public List<String> parseParam() {
+	
+	public List<String> parseAllConditions() {
 	    
 	    cycols = cyApplicationManager.getCurrentNetwork().getDefaultNodeTable().getColumns();
 	    for (CyColumn column : cycols) {

@@ -40,7 +40,7 @@ public class FilterTask extends AbstractTask {
         
         allRows = tab.getAllRows();
         for (CyRow row : allRows) {
-            if (row.isSet("Marked as")) {
+            if (row.isSet("Marked_as")) {
                 row.set("selected",true);
             }
         }
