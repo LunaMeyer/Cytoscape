@@ -24,7 +24,7 @@
     An "artifactId" is the name of the project.
   -->
   <groupId>app</groupId>
-  <artifactId>testapp</artifactId>
+  <artifactId>ElysiApp</artifactId>
   <version>1.0</version>
 
   <!--
