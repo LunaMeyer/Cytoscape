@@ -8,8 +8,6 @@ import org.cytoscape.application.CyApplicationManager;
 import java.io.File;
 
 
-
-
 public class ImportTask extends AbstractTask {
     
     final Manager manager;
@@ -36,6 +34,8 @@ public class ImportTask extends AbstractTask {
             manager.command(null, "table import file file='"+dataPath+"' startLoadRow=0 firstRowAsColumnNames=true");
             insertTasksAfterCurrentTask​(new MergeTask(manager));
             insertTasksAfterCurrentTask​(manager.commandTask(null, "network load file file='"+networkPath+"'"));
+            manager.setNetworkPath("");
+            manager.setDataPath("");
         } else {
             importPanel = new ImportPanel(manager);
         }

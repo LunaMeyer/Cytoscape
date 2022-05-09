@@ -31,6 +31,7 @@ class ImportPanel {
     public ImportPanel(final Manager manager) {
         
         this.manager = manager;
+        
         //create panel and components
         myPanel = new JPanel();
         txt1 = new JLabel("Choose your network file (format):");
@@ -54,7 +55,10 @@ class ImportPanel {
         
         
         //create frame
-        frame = createFrame("Browse");
+        frame = new JFrame("Browse");
+        frame.setSize(400, 400);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setLocationRelativeTo(null);
         
         //add panel to frame
         frame.add(myPanel);
@@ -107,10 +111,7 @@ class ImportPanel {
     
     
     private JFrame createFrame(String title) {
-    	frame = new JFrame(title);
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        frame.setSize(400, 400);
-        frame.setLocationRelativeTo(null);
+    	
         return frame;
     }
     
