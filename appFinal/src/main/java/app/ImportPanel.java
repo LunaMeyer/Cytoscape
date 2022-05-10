@@ -10,6 +10,7 @@ import javax.swing.JTextField;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import java.util.List;
+import java.io.File;
 
 
 class ImportPanel {
@@ -26,16 +27,17 @@ class ImportPanel {
     JButton buttonOk;
     JButton buttonCancel;
  	String path;
+ 	final String currentDir;
     
     
     public ImportPanel(final Manager manager) {
         
         this.manager = manager;
-        
+        currentDir = manager.getAppMan().getCurrentDirectory().getAbsolutePath();
         //create panel and components
         myPanel = new JPanel();
-        txt1 = new JLabel("Choose your network file (format):");
-        txt2 = new JLabel("Choose your data file:");
+        txt1 = new JLabel("Choose your network file:");
+        txt2 = new JLabel("Choose your data file:     ");
         browseNetwork = new JButton("Browse");
         browseData = new JButton("Browse");
         network = new JTextField(30);
@@ -56,32 +58,32 @@ class ImportPanel {
         
         //create frame
         frame = new JFrame("Browse");
-        frame.setSize(400, 400);
+        frame.setSize(600, 150);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setLocationRelativeTo(null);
         
         //add panel to frame
         frame.add(myPanel);
         frame.setVisible(true);
-        frame.pack();
         
         //Create Action listeners for the buttons
         browseNetwork.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                JFileChooser browse = new JFileChooser();
+                JFileChooser browse = new JFileChooser(currentDir);
                 if (browse.showOpenDialog(myPanel) == JFileChooser.APPROVE_OPTION) {
                     path = browse.getSelectedFile().getPath();
                     path = path.replace("\\","/");
                     manager.setNetworkPath(path);
                     network.setText(path);
+                    
                 }
-                
+                manager.getAppMan().setCurrentDirectory(new File(currentDir));
             }
         });
         
         browseData.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) { 
-                JFileChooser browse = new JFileChooser();
+                JFileChooser browse = new JFileChooser(currentDir);
                 if (browse.showOpenDialog(myPanel) == JFileChooser.APPROVE_OPTION) {
                     path = browse.getSelectedFile().getPath();
                     path = path.replace("\\","/");
