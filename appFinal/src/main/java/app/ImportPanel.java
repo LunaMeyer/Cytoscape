@@ -77,7 +77,6 @@ class ImportPanel {
                     network.setText(path);
                     
                 }
-                manager.getAppMan().setCurrentDirectory(new File(currentDir));
             }
         });
         
