@@ -1,0 +1,45 @@
+Cytoscape AutomationApp user guide.
+
+
+=======Installation=======
+From within Cytoscape, to install the app from a app.jar file: menu "Apps" -> "App manager", "Install from File..." choose your app.jar, done.
+
+
+=======Use=======
+
+----Imports
+-To open Import panel, menu "Apps" -> "AutomationApp" -> "Import".
+From the panel:
+    -Click browse to select the network file, any format will work.
+    -Click browse to select the data file, any format will also work.
+    -Write all conditions separated by ";" with no space between conditions, as they are written in the column header of the datafile. Any non alphanumeric character in the resulting string (aside the ";") will be converted to "_" to match cytoscape's native parsing. These conditions will be used only to select the needed attribute columns for the clustering step. (in the test protocol these are "Condition1", "Condition15" and "Condition3".
+    -Click "Ok" to apply. The panel will close and the pipeline will start.
+
+NOTES:
+-Do not click "cancel" on a working task, it will not cancel and will leave it stuck running in loops until the software is manually stopped.
+-During tests, roughly about 1/10 times the network import catches an exception and fails for unknown reasons. In that case the processus should be restarted from the start.
+
+The importing, merging, filtering and clustering steps will proceed automatically from that point on, with a resulting 3 networks: the original full one imported, the network showing only the proteins present in the dataset and the same network but after the clustering step.
+
+
+----Stylisation
+During the clusterisation step, the visualisation panel should open automatically.
+In the case a network is ready, or the panel accidently closed, it is also directly accessible from menu "Apps" -> "AutomationApp" -> "Visualisation".
+From the panel:
+    -Choose the conditions to visualise in the dropdownlist. The list will be taken from all the columns of the datafile starting with "log2".
+    -Click "Apply" to apply the visual style corresponding to the values of this attribute.
+    -Fill the textbox with the client's name.
+    -Clicking export will create a title according to what has been input in the textbox, which will be annoted on the bottom left of the network view. The title will be deleted and recreated anytime "Export" is clicked to allow modification. The network view will resize automatically to fit the title in, and the view will be exported as a Jpeg in the Cytoscape main directory. The name of the Jpeg will be the name of the network + the condition of the visual style applied to it (or null if none have been) + a number if the file name is already present to avoid possible file erasure.
+    -"Cancel" to close the panel.
+
+These steps can be repeated as many time as needed on any networks.
+
+NOTE: The image quality setting of the Jpeg export will be equal to the one of the last export. If the quality is too low, an export should be done manually to change the setting to the needed quality, and all subsequent automatic exports will be of the same quality (even after closing and reopening cytoscape).
+
+
+
+
+
+
+
+
