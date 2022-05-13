@@ -30,7 +30,7 @@ class VizPanel {
         //create panel and components
         this.manager = manager;
         nameList = manager.parseAllConditions();
-        clientNameField = new JTextField("Client Name as Title    ");
+        clientNameField = new JTextField(15);
         myPanel = new JPanel();
         buttonOk= new JButton ("Apply");
         buttonExport = new JButton ("Export");

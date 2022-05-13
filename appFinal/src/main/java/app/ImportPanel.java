@@ -10,7 +10,6 @@ import javax.swing.JTextField;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import java.util.List;
-import java.io.File;
 
 
 class ImportPanel {
@@ -20,14 +19,16 @@ class ImportPanel {
     JFrame frame;
     JLabel txt1;
     JLabel txt2;
+    JLabel txt3;
     JTextField network;
     JTextField data;
+    JTextField conditions;
     JButton browseNetwork;
     JButton browseData;
     JButton buttonOk;
     JButton buttonCancel;
- 	String path;
- 	final String currentDir;
+    String path;
+    final String currentDir;
     
     
     public ImportPanel(final Manager manager) {
@@ -38,10 +39,12 @@ class ImportPanel {
         myPanel = new JPanel();
         txt1 = new JLabel("Choose your network file:");
         txt2 = new JLabel("Choose your data file:     ");
+        txt3 = new JLabel("Enter conditions:         ");
         browseNetwork = new JButton("Browse");
         browseData = new JButton("Browse");
         network = new JTextField(30);
         data = new JTextField(30);
+        conditions = new JTextField(36);
         buttonOk= new JButton ("Ok");
         buttonCancel = new JButton("Cancel");
         
@@ -52,13 +55,15 @@ class ImportPanel {
         myPanel.add(txt2);
         myPanel.add(data);
         myPanel.add(browseData);
+        myPanel.add(txt3);
+        myPanel.add(conditions);
         myPanel.add(buttonOk);
         myPanel.add(buttonCancel);
         
         
         //create frame
         frame = new JFrame("Browse");
-        frame.setSize(600, 150);
+        frame.setSize(600, 200);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setLocationRelativeTo(null);
         
@@ -73,9 +78,7 @@ class ImportPanel {
                 if (browse.showOpenDialog(myPanel) == JFileChooser.APPROVE_OPTION) {
                     path = browse.getSelectedFile().getPath();
                     path = path.replace("\\","/");
-                    manager.setNetworkPath(path);
                     network.setText(path);
-                    
                 }
             }
         });
@@ -86,19 +89,19 @@ class ImportPanel {
                 if (browse.showOpenDialog(myPanel) == JFileChooser.APPROVE_OPTION) {
                     path = browse.getSelectedFile().getPath();
                     path = path.replace("\\","/");
-                    manager.setDataPath(path);
                     data.setText(path);
                 }
-                
             }
         });
         
         //define buttonOk action
         buttonOk.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                manager.setDataPath(data.getText());
+                manager.setNetworkPath(network.getText());
+                manager.setConditions(conditions.getText());
                 manager.executeTask(new ImportTask(manager));
-                frame.dispose();
-                
+                frame.dispose(); 
             }
         });
         
@@ -109,15 +112,6 @@ class ImportPanel {
         });
         
     }
-    
-    
-    private JFrame createFrame(String title) {
-    	
-        return frame;
-    }
-    
-    
-    
     
 }
 

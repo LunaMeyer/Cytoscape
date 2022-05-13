@@ -48,7 +48,6 @@ public class CyActivator extends AbstractCyActivator {
             registerService(bc,vizTaskFactory,TaskFactory.class, props);
         }
         
-        
     }
 }
 

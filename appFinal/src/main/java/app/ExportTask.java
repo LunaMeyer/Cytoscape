@@ -11,6 +11,7 @@ import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.view.model.View;
 import org.cytoscape.view.presentation.property.BasicVisualLexicon;
+
 import java.io.File;
 import java.util.List;
 
@@ -31,10 +32,7 @@ public class ExportTask extends AbstractTask {
     List<Annotation> annList;
     CyNode nodes;
     Double minX;
-    Double minY;
-    Double maxX;
     Double maxY;
-    Double maxW;
     Double maxH;
     
     
@@ -52,10 +50,8 @@ public class ExportTask extends AbstractTask {
         nodeList = network.getNodeList();
         condition = manager.getRef();
         minX = Double.MAX_VALUE;
-        minY = Double.MAX_VALUE;
-	    maxX = Double.MIN_VALUE;
-		maxY = Double.MIN_VALUE;
-		maxH = Double.MIN_VALUE;
+        maxY = Double.MIN_VALUE;
+        maxH = Double.MIN_VALUE;
          
     }
     
@@ -77,18 +73,16 @@ public class ExportTask extends AbstractTask {
         
         //This bit of code (and the corresponding variables called earlier) was taken from the git repository of the cytoscape Legend creator app.
         for (CyNode node : nodeList) {
-			View<CyNode> nodeview = view.getNodeView(node);
-			Double x = nodeview.getVisualProperty(BasicVisualLexicon.NODE_X_LOCATION);
-			Double y = nodeview.getVisualProperty(BasicVisualLexicon.NODE_Y_LOCATION);
-			Double w = nodeview.getVisualProperty(BasicVisualLexicon.NODE_WIDTH);
-			Double h = nodeview.getVisualProperty(BasicVisualLexicon.NODE_HEIGHT);
-	        
-	        maxH = Math.max(maxH, h);
-			minX = Math.min(minX, x-w/2);
-			minY = Math.min(minY, y-h/2);
-			maxX = Math.max(maxX, x+w/2);
-			maxY = Math.max(maxY, y+h/2);
-		}
+            View<CyNode> nodeview = view.getNodeView(node);
+            Double x = nodeview.getVisualProperty(BasicVisualLexicon.NODE_X_LOCATION);
+            Double y = nodeview.getVisualProperty(BasicVisualLexicon.NODE_Y_LOCATION);
+            Double w = nodeview.getVisualProperty(BasicVisualLexicon.NODE_WIDTH);
+            Double h = nodeview.getVisualProperty(BasicVisualLexicon.NODE_HEIGHT);
+            
+            maxH = Math.max(maxH, h);
+            minX = Math.min(minX, x-w/2);
+            maxY = Math.max(maxY, y+h/2);
+        }
 
         //delete annotation if exists
         if (annList.size()>0) {

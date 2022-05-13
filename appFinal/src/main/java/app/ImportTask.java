@@ -3,17 +3,13 @@ package app;
 import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.TaskMonitor;
 
-import org.cytoscape.application.CyApplicationManager;
-
-import java.io.File;
-
 
 public class ImportTask extends AbstractTask {
     
     final Manager manager;
-    CyApplicationManager appMan;
     String dataPath;
     String networkPath;
+    String conditions;
     ImportPanel importPanel;
     
     
@@ -31,20 +27,17 @@ public class ImportTask extends AbstractTask {
         monitor.setTitle("Imports");
         
         if (networkPath.length()>0 && dataPath.length()>0) {
-            manager.command(null, "table import file file='"+dataPath+"' startLoadRow=0 firstRowAsColumnNames=true");
             insertTasksAfterCurrentTask​(new MergeTask(manager));
             insertTasksAfterCurrentTask​(manager.commandTask(null, "network load file file='"+networkPath+"'"));
-            manager.setNetworkPath("");
+            insertTasksAfterCurrentTask​(manager.commandTask(null, "table import file file='"+dataPath+"' startLoadRow=0 firstRowAsColumnNames=true"));
             manager.setDataPath("");
+            manager.setNetworkPath("");
         } else {
             importPanel = new ImportPanel(manager);
         }
         
     }
-    
-    
-    
-    
+     
     
 }
 

@@ -8,7 +8,9 @@ import org.cytoscape.model.CyTable;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyColumn;
+
 import java.util.Collection;
+import java.util.List;
 
 
 public class FilterTask extends AbstractTask {
@@ -21,11 +23,15 @@ public class FilterTask extends AbstractTask {
     Collection<CyRow> allRows;
     Collection<CyColumn> cols;
     CyNetwork net;
+    String prefix;
+    String columnRef;
+    List<String> conditions;
     
     
     public FilterTask (final Manager manager) {
     
         this.manager = manager;
+        prefix = manager.getPrefix();
         
     }
     
@@ -37,10 +43,13 @@ public class FilterTask extends AbstractTask {
         appMan = manager.getAppMan();
         net = appMan.getCurrentNetwork();
         tab = net.getDefaultNodeTable();
+        conditions = manager.parseAllConditions();
+        columnRef = prefix+conditions.get(0)+"_";
+        
         
         allRows = tab.getAllRows();
         for (CyRow row : allRows) {
-            if (row.isSet("Marked_as")) {
+            if (row.isSet(columnRef)) {
                 row.set("selected",true);
             }
         }

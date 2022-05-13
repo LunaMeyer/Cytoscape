@@ -52,13 +52,13 @@ public class VizTask2 extends AbstractTask {
         
         //delete style if already named - From app samples.
         Iterator it = vizMan.getAllVisualStyles().iterator();
-		while (it.hasNext()){
-			VisualStyle curVS = (VisualStyle)it.next();
-			if (curVS.getTitle().equalsIgnoreCase(vizName)) {
-				vizMan.removeVisualStyle(curVS);
-				break;
-			}
-		}
+        while (it.hasNext()){
+            VisualStyle curVS = (VisualStyle)it.next();
+            if (curVS.getTitle().equalsIgnoreCase(vizName)) {
+                vizMan.removeVisualStyle(curVS);
+                break;
+            }
+        }
         
         view = appMan.getCurrentNetworkView();
         vizu1 = manager.getVizu(vizName);
