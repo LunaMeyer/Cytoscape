@@ -12,7 +12,7 @@ From within Cytoscape, to install the app from a app.jar file: menu "Apps" -> "A
 From the panel:
     -Click browse to select the network file, any format will work.
     -Click browse to select the data file, any format will also work.
-    -Write all conditions separated by ";" with no space between conditions, as they are written in the column header of the datafile. Any non alphanumeric character in the resulting string (aside the ";") will be converted to "_" to match cytoscape's native parsing. These conditions will be used only to select the needed attribute columns for the clustering step. (in the test protocol these are "Condition1", "Condition15" and "Condition3".
+    -Write all conditions separated by ";" with no space between conditions, as they are written in the column header of the datafile (case sensitive). Any non alphanumeric character in the resulting string (aside the ";") will be converted to "_" to match cytoscape's native parsing. These conditions will be used only to select the needed attribute columns for the clustering step. (in the test protocol these are "Condition1", "Condition15" and "Condition3".
     -Click "Ok" to apply. The panel will close and the pipeline will start.
 
 NOTES:
